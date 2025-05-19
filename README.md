@@ -27,7 +27,7 @@ A comprehensive end-to-end DevSecOps project implementing a secure three-tier we
 
 ## 🏗️ Architecture Overview
 
-This project demonstrates a complete DevSecOps pipeline for deploying and managing a containerized three-tier web application on Azure Kubernetes Service. The architecture leverages Infrastructure as Code, CI/CD automation, security scanning, and comprehensive monitoring to deliver a secure and reliable application platform.
+This project demonstrates a complete DevSecOps pipeline for deploying and managing a containerised three-tier web application on Azure Kubernetes Service. The architecture leverages Infrastructure as Code, CI/CD automation, security scanning, and comprehensive monitoring to deliver a secure and reliable application platform.
 
 ## 🛠️ Tools & Technologies
 
