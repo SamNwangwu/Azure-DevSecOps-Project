@@ -167,6 +167,7 @@ jobs:
         git add kubernetes/deployment.yaml
         git commit -m "Update image to ${{ github.sha }}" || echo "No changes to commit"
         git push
+
 ArgoCD Configuration for GitOps
 ArgoCD is used to implement GitOps principles for continuous delivery:
 yaml# argocd/application.yaml excerpt
