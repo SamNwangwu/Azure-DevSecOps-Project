@@ -319,5 +319,5 @@ This CI/CD implementation delivers:
 This project demonstrates the implementation of DevSecOps best practices for deploying secure, containerized applications on Azure Kubernetes Service. It integrates CI/CD automation, security scanning, GitOps principles, and comprehensive monitoring to deliver a robust and reliable application platform.
 
 <div align="center">
-  <img src="[made-with-love-badge]" alt="Made with love">
+  <img src="https://img.shields.io/badge/Made_with_❤️_by-Samuel_Nwangwu-blue?style=for-the-badge" alt="Made with love">
 </div>
