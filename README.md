@@ -108,6 +108,8 @@ resource "azurerm_container_registry" "acr" {
   sku                 = "Standard"
   admin_enabled       = false
 }
+
+
 CI/CD Pipeline with GitHub Actions
 The project implements a comprehensive CI/CD pipeline using GitHub Actions:
 
