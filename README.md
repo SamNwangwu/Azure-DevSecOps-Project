@@ -2,7 +2,7 @@
 A comprehensive end-to-end DevSecOps project implementing a secure three-tier web application on Microsoft Azure using industry best practices for security, CI/CD, GitOps, and monitoring.
 
 <div align="center">
-  <img src="./AzureCICDDiagram.png" alt="Azure Architecture Diagram" width="800">
+  <img src="./Three-Tier-Appplication-AzureDevSecOps.png" alt="Azure Architecture Diagram" width="800">
 </div>
 
 ## 📋 Table of Contents
