@@ -7,23 +7,23 @@
 A comprehensive end-to-end DevSecOps project implementing a secure three-tier web application on Microsoft Azure using industry best practices for security, CI/CD, GitOps, and monitoring.
 
 <div align="center">
-  <img src="[https://placeholder-for-architecture-diagram.png](https://placeholder-for-architecture-diagram.png)" alt="Azure Architecture Diagram" width="800">
+  <img src="https://placeholder-for-architecture-diagram.png" alt="Azure Architecture Diagram" width="800">
 </div>
 
 ## 📋 Table of Contents
 
-[Architecture Overview](#architecture-overview)
-[Tools & Technologies](#tools--technologies)
-[Project Implementation](#project-implementation)
-[Infrastructure Provisioning](#infrastructure-provisioning)
-[CI/CD Pipeline](#cicd-pipeline)
-[GitOps Configuration](#gitops-configuration)
-[Monitoring Setup](#monitoring-setup)
-[Security Features](#security-features)
-[Monitoring Dashboards](#monitoring-dashboards)
-[Results & Benefits](#results--benefits)
-[Next Steps](#next-steps)
-[About](#about)
+- [Architecture Overview](#architecture-overview)
+- [Tools & Technologies](#tools--technologies)
+- [Project Implementation](#project-implementation)
+- [Infrastructure Provisioning](#infrastructure-provisioning)
+- [CI/CD Pipeline](#cicd-pipeline)
+- [GitOps Configuration](#gitops-configuration)
+- [Monitoring Setup](#monitoring-setup)
+- [Security Features](#security-features)
+- [Monitoring Dashboards](#monitoring-dashboards)
+- [Results & Benefits](#results--benefits)
+- [Next Steps](#next-steps)
+- [About](#about)
 
 ## 🏗️ Architecture Overview
 
@@ -108,13 +108,13 @@ resource "azurerm_container_registry" "acr" {
   sku                 = "Standard"
   admin_enabled       = false
 }
+```
 
+### CI/CD Pipeline with GitHub Actions
 
-CI/CD Pipeline with GitHub Actions
 The project implements a comprehensive CI/CD pipeline using GitHub Actions:
 
-YAML
-
+```yaml
 # .github/workflows/ci-cd.yml excerpt
 
 name: CI/CD Pipeline
@@ -170,12 +170,12 @@ jobs:
       with:
         context: .
         push: true
-        tags: <span class="math-inline">\{\{ secrets\.ACR\_LOGIN\_SERVER \}\}/myapp\:</span>{{ github.sha }}
+        tags: ${{ secrets.ACR_LOGIN_SERVER }}/myapp:${{ github.sha }}
 
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: <span class="math-inline">\{\{ secrets\.ACR\_LOGIN\_SERVER \}\}/myapp\:</span>{{ github.sha }}
+        image-ref: ${{ secrets.ACR_LOGIN_SERVER }}/myapp:${{ github.sha }}
         format: 'table'
         exit-code: '1'
         severity: 'CRITICAL,HIGH'
@@ -194,7 +194,7 @@ jobs:
 
     - name: Update Kubernetes manifests
       run: |
-        sed -i "s|image:.*|image: <span class="math-inline">\{\{ secrets\.ACR\_LOGIN\_SERVER \}\}/myapp\:</span>{{ github.sha }}|" kubernetes/deployment.yaml
+        sed -i "s|image:.*|image: ${{ secrets.ACR_LOGIN_SERVER }}/myapp:${{ github.sha }}|" kubernetes/deployment.yaml
 
     - name: Commit and push updated manifests
       run: |
@@ -203,11 +203,13 @@ jobs:
         git add kubernetes/deployment.yaml
         git commit -m "Update image to ${{ github.sha }}" || echo "No changes to commit"
         git push
-ArgoCD Configuration for GitOps
+```
+
+### ArgoCD Configuration for GitOps
+
 ArgoCD is used to implement GitOps principles for continuous delivery:
 
-YAML
-
+```yaml
 # argocd/application.yaml excerpt
 
 apiVersion: argoproj.io/v1alpha1
@@ -228,11 +230,13 @@ spec:
     automated:
       prune: true
       selfHeal: true
-Monitoring Setup
+```
+
+### Monitoring Setup
+
 The project includes comprehensive monitoring with Prometheus and Grafana:
 
-YAML
-
+```yaml
 # prometheus/prometheus.yaml excerpt
 
 apiVersion: v1
@@ -252,14 +256,17 @@ data:
           - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
             action: keep
             regex: true
-🔒 Security Features
-Static Application Security Testing (SAST) with SonarQube
-Software Composition Analysis (SCA) with Snyk
-Container Vulnerability Scanning with Trivy
-Runtime Protection with Microsoft Defender for Containers
-Network Security with Azure Network Security Groups
-Secret Management using Azure Key Vault
-RBAC implementation for AKS and Azure resources
+```
+
+## 🔒 Security Features
+
+* Static Application Security Testing (SAST) with SonarQube
+* Software Composition Analysis (SCA) with Snyk
+* Container Vulnerability Scanning with Trivy
+* Runtime Protection with Microsoft Defender for Containers
+* Network Security with Azure Network Security Groups
+* Secret Management using Azure Key Vault
+* RBAC implementation for AKS and Azure resources
 
 ## 📊 Monitoring Dashboards
 
@@ -270,21 +277,21 @@ The project includes comprehensive monitoring dashboards:
   <tr>
     <td width="50%">
       <strong>Kubernetes Cluster Health</strong><br/>
-      <img src="[suspicious link removed]" alt="K8s Dashboard" width="100%">
+      <img src="[placeholder-image]" alt="K8s Dashboard" width="100%">
     </td>
     <td width="50%">
       <strong>Application Performance</strong><br/>
-      <img src="[suspicious link removed]" alt="App Dashboard" width="100%">
+      <img src="[placeholder-image]" alt="App Dashboard" width="100%">
     </td>
   </tr>
   <tr>
     <td width="50%">
       <strong>Security Posture</strong><br/>
-      <img src="[suspicious link removed]" alt="Security Dashboard" width="100%">
+      <img src="[placeholder-image]" alt="Security Dashboard" width="100%">
     </td>
     <td width="50%">
       <strong>Cost Optimization</strong><br/>
-      <img src="[suspicious link removed]" alt="Cost Dashboard" width="100%">
+      <img src="[placeholder-image]" alt="Cost Dashboard" width="100%">
     </td>
   </tr>
 </table>
@@ -312,7 +319,5 @@ This CI/CD implementation delivers:
 This project demonstrates the implementation of DevSecOps best practices for deploying secure, containerized applications on Azure Kubernetes Service. It integrates CI/CD automation, security scanning, GitOps principles, and comprehensive monitoring to deliver a robust and reliable application platform.
 
 <div align="center">
-  <img src="[suspicious link removed]_❤️_by-Samuel_Nwangwu-blue?style=for-the-badge" alt="Made with love">
+  <img src="[made-with-love-badge]" alt="Made with love">
 </div>
-
-----
