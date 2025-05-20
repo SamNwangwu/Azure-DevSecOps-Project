@@ -1,0 +1,206 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  ACR_NAME: ${{ secrets.ACR_NAME }}
+  CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
+  RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+  FRONTEND_IMAGE_NAME: devsecops-frontend
+  BACKEND_IMAGE_NAME: devsecops-backend
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+    
+    # Frontend tests and scans
+    - name: Install dependencies (Frontend)
+      working-directory: ./app/frontend
+      run: npm ci
+    
+    - name: Run tests (Frontend)
+      working-directory: ./app/frontend
+      run: npm test -- --passWithNoTests
+    
+    # Backend tests and scans
+    - name: Install dependencies (Backend)
+      working-directory: ./app/backend
+      run: npm ci
+    
+    - name: Run tests (Backend)
+      working-directory: ./app/backend
+      run: npm test -- --passWithNoTests
+    
+    - name: Run SonarQube Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectBaseDir: .
+    
+    - name: Run Snyk Security Scan (Frontend)
+      uses: snyk/actions/node@master
+      with:
+        command: test
+        args: --all-projects
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        WORKING_DIRECTORY: ./app/frontend
+    
+    - name: Run Snyk Security Scan (Backend)
+      uses: snyk/actions/node@master
+      with:
+        command: test
+        args: --all-projects
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        WORKING_DIRECTORY: ./app/backend
+
+  build-and-push:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Login to ACR
+      run: az acr login --name $ACR_NAME
+    
+    - name: Build and push Frontend Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: ./app/frontend
+        push: true
+        tags: ${{ env.ACR_NAME }}.azurecr.io/${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }},${{ env.ACR_NAME }}.azurecr.io/${{ env.FRONTEND_IMAGE_NAME }}:latest
+    
+    - name: Build and push Backend Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: ./app/backend
+        push: true
+        tags: ${{ env.ACR_NAME }}.azurecr.io/${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }},${{ env.ACR_NAME }}.azurecr.io/${{ env.BACKEND_IMAGE_NAME }}:latest
+    
+    - name: Run Trivy vulnerability scanner (Frontend)
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ${{ env.ACR_NAME }}.azurecr.io/${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }}
+        format: 'table'
+        exit-code: '0'
+        severity: 'CRITICAL,HIGH'
+    
+    - name: Run Trivy vulnerability scanner (Backend)
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ${{ env.ACR_NAME }}.azurecr.io/${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }}
+        format: 'table'
+        exit-code: '0'
+        severity: 'CRITICAL,HIGH'
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Set AKS context
+      uses: azure/aks-set-context@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        resource-group: ${{ env.RESOURCE_GROUP }}
+        cluster-name: ${{ env.CLUSTER_NAME }}
+    
+    - name: Create namespace if not exists
+      run: |
+        kubectl get namespace app || kubectl create namespace app
+    
+    - name: Create image pull secret for ACR
+      uses: azure/k8s-create-secret@v1
+      with:
+        namespace: app
+        secret-type: 'kubernetes.io/dockerconfigjson'
+        secret-name: acr-secret
+        docker-server: ${{ env.ACR_NAME }}.azurecr.io
+        docker-username: ${{ secrets.AZURE_CLIENT_ID }}
+        docker-password: ${{ secrets.AZURE_CLIENT_SECRET }}
+    
+    - name: Update Kubernetes manifests
+      run: |
+        sed -i "s|__FRONTEND_IMAGE__|${{ env.ACR_NAME }}.azurecr.io/${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }}|g" kubernetes/frontend-deployment.yaml
+        sed -i "s|__BACKEND_IMAGE__|${{ env.ACR_NAME }}.azurecr.io/${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }}|g" kubernetes/backend-deployment.yaml
+    
+    - name: Deploy to AKS
+      uses: azure/k8s-deploy@v1
+      with:
+        namespace: app
+        manifests: |
+          kubernetes/frontend-deployment.yaml
+          kubernetes/frontend-service.yaml
+          kubernetes/backend-deployment.yaml
+          kubernetes/backend-service.yaml
+          kubernetes/mongodb-pvc.yaml
+          kubernetes/mongodb-deployment.yaml
+          kubernetes/mongodb-service.yaml
+    
+    - name: Verify deployment
+      run: |
+        kubectl get pods -n app
+        kubectl get svc -n app
+
+  setup-gitops:
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Set AKS context
+      uses: azure/aks-set-context@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        resource-group: ${{ env.RESOURCE_GROUP }}
+        cluster-name: ${{ env.CLUSTER_NAME }}
+    
+    - name: Install ArgoCD in the cluster
+      run: |
+        kubectl create namespace argocd || true
+        kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+    
+    - name: Apply ArgoCD application configuration
+      run: |
+        # Replace the repository URL with the actual one
+        REPO_URL=$(git config --get remote.origin.url | sed 's/git@github.com:/https:\/\/github.com\//')
+        sed -i "s|https://github.com/SamNwangwu/Azure-DevSecOps-Project.git|$REPO_URL|g" argocd/application.yaml
+        kubectl apply -f argocd/application.yaml
