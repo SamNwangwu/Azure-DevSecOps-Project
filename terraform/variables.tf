@@ -19,7 +19,7 @@ variable "cluster_name" {
 variable "acr_name" {
   description = "Name of Azure Container Registry"
   type        = string
-  default     = "devsecopsacr"
+  default     = "devsecopssam123456"
 }
 
 variable "dns_prefix" {
@@ -31,17 +31,17 @@ variable "dns_prefix" {
 variable "node_count" {
   description = "Number of nodes in the default node pool"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "vm_size" {
   description = "VM size for AKS nodes"
   type        = string
-  default     = "Standard_D2s_v3"
+  default     = "Standard_B2s"
 }
 
 variable "kubernetes_version" {
   description = "Kubernetes version"
   type        = string
-  default     = "1.26.6"
+  default     = "1.30.4"
 }

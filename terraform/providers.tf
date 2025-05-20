@@ -8,7 +8,7 @@ terraform {
 
   backend "azurerm" {
     resource_group_name  = "terraform-state-rg"
-    storage_account_name = "terraformstate20250519"
+    storage_account_name = "tfstate18805"
     container_name       = "tfstate"
     key                  = "azure-devsecops.tfstate"
   }
@@ -16,4 +16,5 @@ terraform {
 
 provider "azurerm" {
   features {}
+  skip_provider_registration = true
 }
