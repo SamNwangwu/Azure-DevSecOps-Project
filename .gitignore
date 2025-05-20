@@ -1,0 +1,26 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log
+
+# Build outputs
+app/frontend/build/
+app/backend/dist/
+
+# Environment files
+.env
+.env.local
+*.env.local
+
+# Terraform files
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/.terraform.lock.hcl
+terraform/terraform.tfvars
+
+# VSCode
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
