@@ -52,6 +52,9 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         projectBaseDir: .
+        args: >
+          -Dsonar.organization=samnwangwu
+          -Dsonar.projectKey=SamNwangwu_Azure-DevSecOps-Project
     
     - name: Run Snyk Security Scan (Frontend)
       uses: snyk/actions/node@master

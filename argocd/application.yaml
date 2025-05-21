@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/SamNwangwu/Azure-DevSecOps-Project.git  # Replace with your actual GitHub repo URL
+    repoURL: https://github.com/SamNwangwu/Azure-DevSecOps-Project.git
     targetRevision: main
     path: kubernetes
   destination:
