@@ -1,5 +1,5 @@
 # Azure DevSecOps CI/CD Project
-A comprehensive end-to-end DevSecOps project implementing a secure three-tier web application on Microsoft Azure using industry best practices for security, CI/CD, GitOps, and monitoring.
+A comprehensive end-to-end DevSecOps project implementing a secure three-tier web application on Azure Kubernetes Service using industry best practices for security, CI/CD, GitOps, and monitoring.
 
 <div align="center">
   <img src="./Three-Tier-App-AzureDevSecOps.png" alt="Azure Architecture Diagram" width="800">
@@ -28,7 +28,7 @@ This project demonstrates a complete DevSecOps pipeline for deploying and managi
 
 **Cloud Infrastructure**
 
-* Azure (Azure AD, AKS, Application Gateway, Azure DNS, Azure CLI)
+* Azure (Entra, AKS, Application Gateway, Azure DNS, Azure CLI)
 * Terraform (Infrastructure as Code)
 
 **CI/CD Pipeline**
