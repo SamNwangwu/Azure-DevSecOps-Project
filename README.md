@@ -271,24 +271,9 @@ The project includes comprehensive monitoring dashboards:
 <table>
   <tr>
     <td width="50%">
-      <strong>Kubernetes Cluster Health</strong><br/>
+      <strong>Kubernetes Cluster Health (Grafana)</strong><br/>
       <img src="./Grafana-Dashboard.png" alt="K8s Dashboard" width="100%">
     </td>
-    <td width="50%">
-      <strong>Application Performance</strong><br/>
-      <img src="[placeholder-image]" alt="App Dashboard" width="100%">
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <strong>Security Posture</strong><br/>
-      <img src="[placeholder-image]" alt="Security Dashboard" width="100%">
-    </td>
-    <td width="50%">
-      <strong>Cost Optimization</strong><br/>
-      <img src="[placeholder-image]" alt="Cost Dashboard" width="100%">
-    </td>
-  </tr>
 </table>
 </div>
 
