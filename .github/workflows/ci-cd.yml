@@ -33,24 +33,18 @@ jobs:
       run: npm test -- --passWithNoTests
     
     - name: Run Snyk Security Scan (Frontend)
-      uses: snyk/actions/node@master
+      working-directory: ./app/frontend
+      run: |
+        npx snyk auth ${{ secrets.SNYK_TOKEN }}
+        npx snyk test --severity-threshold=high || true
       continue-on-error: true
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      with:
-        command: test
-        args: --severity-threshold=high
-        working-directory: ./app/frontend
     
     - name: Run Snyk Security Scan (Backend)
-      uses: snyk/actions/node@master
+      working-directory: ./app/backend
+      run: |
+        npx snyk auth ${{ secrets.SNYK_TOKEN }}
+        npx snyk test --severity-threshold=high || true
       continue-on-error: true
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      with:
-        command: test
-        args: --severity-threshold=high
-        working-directory: ./app/backend
 
     - name: Build Success
       run: echo "Build and security scans completed successfully"
