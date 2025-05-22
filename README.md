@@ -316,3 +316,9 @@ This project demonstrates the implementation of DevSecOps best practices for dep
 <div align="center">
   <img src="https://img.shields.io/badge/Made_with_❤️_by-Samuel_Nwangwu-blue?style=for-the-badge" alt="Made with love">
 </div>
+
+## Security Scanning
+This project implements comprehensive security scanning with:
+- SonarQube for static code analysis
+- Snyk for dependency vulnerability scanning
+- Kubernetes security policies for runtime protection
