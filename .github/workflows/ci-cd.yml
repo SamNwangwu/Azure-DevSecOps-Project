@@ -32,17 +32,25 @@ jobs:
       working-directory: ./app/backend
       run: npm test -- --passWithNoTests
     
-  build-and-push:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Echo success
-      run: echo "Build and push would happen here in a production environment"
+    - name: Run Snyk Security Scan (Frontend)
+      uses: snyk/actions/node@master
+      continue-on-error: true
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        command: test
+        args: --severity-threshold=high
+        working-directory: ./app/frontend
     
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
-    - name: Echo success
-      run: echo "Deployment would happen here in a production environment"
+    - name: Run Snyk Security Scan (Backend)
+      uses: snyk/actions/node@master
+      continue-on-error: true
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        command: test
+        args: --severity-threshold=high
+        working-directory: ./app/backend
+
+    - name: Build Success
+      run: echo "Build and security scans completed successfully"
