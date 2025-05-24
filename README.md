@@ -261,11 +261,16 @@ data:
 
 * Static Application Security Testing (SAST) with SonarQube
 * Software Composition Analysis (SCA) with Snyk
-* Container Vulnerability Scanning with Trivy
 * Runtime Protection with Microsoft Defender for Containers
 * Network Security with Azure Network Security Groups
 * Secret Management using Azure Key Vault
 * RBAC implementation for AKS and Azure resources
+
+## Security Scanning
+This project implements comprehensive security scanning with:
+- SonarQube for static code analysis
+- Snyk for dependency vulnerability scanning
+- Kubernetes security policies for runtime protection
 
 ## 📊 Monitoring Dashboards
 
@@ -279,13 +284,13 @@ The project includes comprehensive monitoring dashboards:
       <img src=".github/assets/Grafana-Dashboard.png" alt="K8s Dashboard" width="100%">
     </td>
     <td width="50%">
-      <strong>SonarQube Code Quality Analysis</strong><br/>
+      <strong>SonarQube SAST</strong><br/>
       <img src=".github/assets/sonarqube.png" alt="SonarQube Dashboard" width="100%">
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <strong>Snyk SAST Image Scanning</strong><br/>
+      <strong>Snyk SCA</strong><br/>
       <img src=".github/assets/snyk.png" alt="Snyk" width="100%">
     </td>
     <td width="50%">
@@ -319,9 +324,3 @@ This project demonstrates the implementation of DevSecOps best practices for dep
 <div align="center">
   <img src="https://img.shields.io/badge/Made_with_❤️_by-Samuel_Nwangwu-blue?style=for-the-badge" alt="Made with love">
 </div>
-
-## Security Scanning
-This project implements comprehensive security scanning with:
-- SonarQube for static code analysis
-- Snyk for dependency vulnerability scanning
-- Kubernetes security policies for runtime protection
