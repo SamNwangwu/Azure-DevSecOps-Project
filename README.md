@@ -257,6 +257,12 @@ data:
             regex: true
 ```
 
+## Working Application:
+![image](.github/assets/todoapp.png)
+
+## Working Services:
+![image](.github/assets/services-working.png)
+
 ## 🔒 Security Features
 
 * Static Application Security Testing (SAST) with SonarQube
