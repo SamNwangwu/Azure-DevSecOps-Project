@@ -109,6 +109,8 @@ resource "azurerm_container_registry" "acr" {
 
 The project implements a comprehensive CI/CD pipeline using GitHub Actions:
 
+![Image Description](.github/assets/cicd-pipeline.png)
+
 ```yaml
 # .github/workflows/ci-cd.yml excerpt
 
