@@ -312,6 +312,7 @@ This CI/CD implementation delivers:
 
 ## 🔮 Next Steps
 
+* Implement Dynamic Application Security Testing (DAST) with OWASP ZAP
 * Implement blue-green deployment strategy
 * Add chaos engineering tests
 * Integrate cost optimization tools
