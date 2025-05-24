@@ -276,16 +276,22 @@ The project includes comprehensive monitoring dashboards:
   <tr>
     <td width="50%">
       <strong>Kubernetes Cluster Health (Grafana)</strong><br/>
-      <img src="./Grafana-Dashboard.png" alt="K8s Dashboard" width="100%">
+      <img src=".github/assets/Grafana-Dashboard.png" alt="K8s Dashboard" width="100%">
     </td>
     <td width="50%">
       <strong>SonarQube Code Quality Analysis</strong><br/>
       <img src=".github/assets/sonarqube.png" alt="SonarQube Dashboard" width="100%">
     </td>
+  </tr>
+  <tr>
     <td width="50%">
       <strong>Snyk SAST Image Scanning</strong><br/>
       <img src=".github/assets/snyk.png" alt="Snyk" width="100%">
     </td>
+    <td width="50%">
+      <!-- Empty cell or add another image here -->
+    </td>
+  </tr>
 </table>
 </div>
 
