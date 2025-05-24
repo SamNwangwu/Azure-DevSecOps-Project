@@ -109,7 +109,7 @@ resource "azurerm_container_registry" "acr" {
 
 The project implements a comprehensive CI/CD pipeline using GitHub Actions:
 
-![Image Description](.github/assets/cicd-pipeline.png)
+![image](.github/assets/cicd-pipeline.png)
 
 ```yaml
 # .github/workflows/ci-cd.yml excerpt
@@ -206,6 +206,8 @@ jobs:
 
 ArgoCD is used to implement GitOps principles for continuous delivery:
 
+![image](.github/assets/argocd.png)
+
 ```yaml
 # argocd/application.yaml excerpt
 
@@ -275,6 +277,14 @@ The project includes comprehensive monitoring dashboards:
     <td width="50%">
       <strong>Kubernetes Cluster Health (Grafana)</strong><br/>
       <img src="./Grafana-Dashboard.png" alt="K8s Dashboard" width="100%">
+    </td>
+    <td width="50%">
+      <strong>SonarQube Code Quality Analysis</strong><br/>
+      <img src=".github/assets/sonarqube.png" alt="SonarQube Dashboard" width="100%">
+    </td>
+    <td width="50%">
+      <strong>Snyk SAST Image Scanning</strong><br/>
+      <img src=".github/assets/snyk.png" alt="Snyk" width="100%">
     </td>
 </table>
 </div>
