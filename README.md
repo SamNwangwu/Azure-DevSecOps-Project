@@ -295,12 +295,9 @@ The project includes comprehensive monitoring dashboards:
     </td>
   </tr>
   <tr>
-    <td width="50%">
+    <td colspan="2" align="center">
       <strong>Snyk SCA</strong><br/>
-      <img src=".github/assets/snyk.png" alt="Snyk" width="100%">
-    </td>
-    <td width="50%">
-      <!-- Empty cell or add another image here -->
+      <img src=".github/assets/snyk.png" alt="Snyk" width="50%">
     </td>
   </tr>
 </table>
