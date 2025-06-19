@@ -109,123 +109,14 @@ resource "azurerm_container_registry" "acr" {
 
 The project implements a comprehensive CI/CD pipeline using GitHub Actions:
 
-```yaml
-# .github/workflows/ci-cd.yml excerpt
-
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-
-    - name: Install dependencies
-      run: npm ci
-
-    - name: Run SonarQube Scan
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-    - name: Run Snyk Security Scan
-      uses: snyk/actions/node@master
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-  build-and-push:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Login to ACR
-      uses: azure/docker-login@v1
-      with:
-        login-server: ${{ secrets.ACR_LOGIN_SERVER }}
-        username: ${{ secrets.AZURE_CLIENT_ID }}
-        password: ${{ secrets.AZURE_CLIENT_SECRET }}
-
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v4
-      with:
-        context: .
-        push: true
-        tags: ${{ secrets.ACR_LOGIN_SERVER }}/myapp:${{ github.sha }}
-
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      with:
-        image-ref: ${{ secrets.ACR_LOGIN_SERVER }}/myapp:${{ github.sha }}
-        format: 'table'
-        exit-code: '1'
-        severity: 'CRITICAL,HIGH'
-
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Install ArgoCD CLI
-      run: |
-        curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-        chmod +x argocd
-        sudo mv argocd /usr/local/bin/argocd
-
-    - name: Update Kubernetes manifests
-      run: |
-        sed -i "s|image:.*|image: ${{ secrets.ACR_LOGIN_SERVER }}/myapp:${{ github.sha }}|" kubernetes/deployment.yaml
-
-    - name: Commit and push updated manifests
-      run: |
-        git config --global user.name 'GitHub Actions'
-        git config --global user.email 'actions@github.com'
-        git add kubernetes/deployment.yaml
-        git commit -m "Update image to ${{ github.sha }}" || echo "No changes to commit"
-        git push
-```
+![image](.github/assets/cicd-pipeline.png)
 
 ### ArgoCD Configuration for GitOps
 
 ArgoCD is used to implement GitOps principles for continuous delivery:
 
-```yaml
-# argocd/application.yaml excerpt
+![image](.github/assets/argocd.png)
 
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: myapp
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: https://github.com/yourusername/azure-devops-project.git
-    targetRevision: HEAD
-    path: kubernetes
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: default
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-```
 
 ### Monitoring Setup
 
@@ -253,15 +144,26 @@ data:
             regex: true
 ```
 
+## Working Application:
+![image](.github/assets/todoappl.png)
+
+## Working Services:
+![image](.github/assets/services-working.png)
+
 ## 🔒 Security Features
 
 * Static Application Security Testing (SAST) with SonarQube
 * Software Composition Analysis (SCA) with Snyk
-* Container Vulnerability Scanning with Trivy
 * Runtime Protection with Microsoft Defender for Containers
 * Network Security with Azure Network Security Groups
 * Secret Management using Azure Key Vault
 * RBAC implementation for AKS and Azure resources
+
+## Security Scanning
+This project implements comprehensive security scanning with:
+- SonarQube for static code analysis
+- Snyk for dependency vulnerability scanning
+- Kubernetes security policies for runtime protection
 
 ## 📊 Monitoring Dashboards
 
@@ -271,9 +173,20 @@ The project includes comprehensive monitoring dashboards:
 <table>
   <tr>
     <td width="50%">
-      <strong>Kubernetes Cluster Health (Grafana)</strong><br/>
-      <img src="./Grafana-Dashboard.png" alt="K8s Dashboard" width="100%">
+      <strong>Grafana - Kubernetes Cluster Health</strong><br/>
+      <img src=".github/assets/Grafana-Dashboard.png" alt="K8s Dashboard" width="100%">
     </td>
+    <td width="50%">
+      <strong>SonarQube SAST</strong><br/>
+      <img src=".github/assets/sonarqube.png" alt="SonarQube Dashboard" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <strong>Snyk SCA</strong><br/>
+      <img src=".github/assets/snyk.png" alt="Snyk" width="50%">
+    </td>
+  </tr>
 </table>
 </div>
 
@@ -289,6 +202,7 @@ This CI/CD implementation delivers:
 
 ## 🔮 Next Steps
 
+* Implement Dynamic Application Security Testing (DAST) with OWASP ZAP
 * Implement blue-green deployment strategy
 * Add chaos engineering tests
 * Integrate cost optimization tools
@@ -301,9 +215,3 @@ This project demonstrates the implementation of DevSecOps best practices for dep
 <div align="center">
   <img src="https://img.shields.io/badge/Made_with_❤️_by-Samuel_Nwangwu-blue?style=for-the-badge" alt="Made with love">
 </div>
-
-## Security Scanning
-This project implements comprehensive security scanning with:
-- SonarQube for static code analysis
-- Snyk for dependency vulnerability scanning
-- Kubernetes security policies for runtime protection
