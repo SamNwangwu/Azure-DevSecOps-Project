@@ -63,47 +63,8 @@ This project demonstrates a complete DevSecOps pipeline for deploying and managi
 
 The project uses Terraform to provision all required Azure infrastructure:
 
-```hcl
-# main.tf excerpt
+![image](.github/assets/terraform.png)
 
-# Create Resource Group
-resource "azurerm_resource_group" "rg" {
-  name    = var.resource_group_name
-  location = var.location
-}
-
-# Create Azure Kubernetes Service
-resource "azurerm_kubernetes_cluster" "aks" {
-  name                = var.cluster_name
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  dns_prefix          = var.dns_prefix
-
-  default_node_pool {
-    name       = "default"
-    node_count = var.node_count
-    vm_size    = var.vm_size
-  }
-
-  identity {
-    type = "SystemAssigned"
-  }
-
-  network_profile {
-    network_plugin    = "azure"
-    load_balancer_sku = "standard"
-  }
-}
-
-# Create Container Registry
-resource "azurerm_container_registry" "acr" {
-  name                = var.acr_name
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  sku                 = "Standard"
-  admin_enabled       = false
-}
-```
 
 ### CI/CD Pipeline with GitHub Actions
 
