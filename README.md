@@ -64,6 +64,8 @@ This project demonstrates a complete DevSecOps pipeline for deploying and managi
 The project uses Terraform to provision all required Azure infrastructure:
 
 ![image](.github/assets/terraform.png)
+![image](.github/assets/azuredso1.png)
+![image](.github/assets/azuredso2.png)
 
 
 ### CI/CD Pipeline with GitHub Actions
